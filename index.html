@@ -10,9 +10,6 @@
 
 <body>
   <div id="container">
-    <div id="header">
-      header
-    </div>
     <div id="sidebar">
       sidebar
     </div>
@@ -35,43 +32,44 @@
 </script>
 
 <script>
-    // require node modules before loader.js comes in
-    var path = require('path');
-    function uriFromPath(_path) {
-      var pathName = path.resolve(_path).replace(/\\/g, '/');
-      if (pathName.length > 0 && pathName.charAt(0) !== '/') {
-        pathName = '/' + pathName;
-      }
-      return encodeURI('file://' + pathName);
+  // require node modules before loader.js comes in
+  var path = require('path');
+  function uriFromPath(_path) {
+    var pathName = path.resolve(_path).replace(/\\/g, '/');
+    if (pathName.length > 0 && pathName.charAt(0) !== '/') {
+      pathName = '/' + pathName;
     }
-    amdRequire.config({
-      baseUrl: uriFromPath(path.join(__dirname, './node_modules/monaco-editor/min'))
+    return encodeURI('file://' + pathName);
+  }
+  amdRequire.config({
+    baseUrl: uriFromPath(path.join(__dirname, './node_modules/monaco-editor/min'))
+  });
+  // workaround monaco-css not understanding the environment
+  self.module = undefined;
+  // workaround monaco-typescript not understanding the environment
+  self.process.browser = true;
+  amdRequire(['vs/editor/editor.main'], function () {
+    var editor = monaco.editor.create(document.getElementById('editor'), {
+      value: [
+        'function x()',
+        '    print("Hello world!")',
+        'end'
+      ].join('\n'),
+      language: 'lua'
     });
-    // workaround monaco-css not understanding the environment
-    self.module = undefined;
-    // workaround monaco-typescript not understanding the environment
-    self.process.browser = true;
-    amdRequire(['vs/editor/editor.main'], function () {
-      var editor = monaco.editor.create(document.getElementById('editor'), {
-        value: [
-          'function x()',
-          '    print("Hello world!")',
-          'end'
-        ].join('\n'),
-        language: 'lua'
-      });
 
-      window.addEventListener('resize', () => {
-        console.log('resize');
-        editor.layout()
-      });
+    window.addEventListener('resize', () => {
+      console.log('resize');
+      editor.layout()
     });
+  });
 </script>
 
 <script src="./node_modules/xterm/dist/xterm.js"></script>
 <script>
-  const terminal = new Terminal();
-  terminal.open(document.getElementById('terminal'));
-  terminal.write('Not connected');
+    const terminal = new Terminal();
+    terminal.open(document.getElementById('terminal'));
+    terminal.write('Not connected');
 </script>
+
 </html>

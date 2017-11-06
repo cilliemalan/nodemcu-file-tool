@@ -7,18 +7,13 @@ body {
 #container {
     display: grid;
     grid-template-columns: 200px auto;
-    grid-template-rows: 30px auto 200px;
+    grid-template-rows: auto 200px;
     grid-template-areas:
-        "header header"
         "sidebar editor"
         "terminal terminal";
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-}
-
-#header {
-    grid-area: header;    
 }
 
 #sidebar {
