@@ -54,11 +54,11 @@
     amdRequire(['vs/editor/editor.main'], function () {
       var editor = monaco.editor.create(document.getElementById('editor'), {
         value: [
-          'function x() {',
-          '\tconsole.log("Hello world!");',
-          '}'
+          'function x()',
+          '    print("Hello world!")',
+          'end'
         ].join('\n'),
-        language: 'javascript'
+        language: 'lua'
       });
 
       window.addEventListener('resize', () => {
