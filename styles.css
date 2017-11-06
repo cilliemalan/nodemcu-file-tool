@@ -13,6 +13,8 @@ body {
         "sidebar editor"
         "terminal terminal";
     height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 
 #header {
@@ -24,7 +26,8 @@ body {
 }
 
 #editor {
-    grid-area: editor;    
+    grid-area: editor;
+    overflow: hidden;
 }
 
 #terminal {
