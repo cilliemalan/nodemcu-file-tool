@@ -16,6 +16,7 @@
     "electron": "^1.8.1"
   },
   "dependencies": {
-    "monaco-editor": "^0.10.1"
+    "monaco-editor": "^0.10.1",
+    "xterm": "^2.9.2"
   }
 }
