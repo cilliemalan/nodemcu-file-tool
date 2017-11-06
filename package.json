@@ -1,7 +1,7 @@
 {
-  "name": "electron-quick-start",
+  "name": "nodemcu-file-tool",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "A tool for working with your NodeMCU",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
