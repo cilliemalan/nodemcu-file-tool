@@ -17,7 +17,8 @@ body {
 }
 
 #sidebar {
-    grid-area: sidebar;    
+    grid-area: sidebar;
+    padding: 5px;
 }
 
 #editor {
