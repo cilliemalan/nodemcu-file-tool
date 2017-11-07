@@ -4,7 +4,8 @@
   "description": "A tool for working with your NodeMCU",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-rebuild"
   },
   "repository": "https://github.com/cilliemalan/nodemcu-file-tool.git",
   "keywords": [
@@ -13,10 +14,12 @@
   "author": "GitHub",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^1.8.1"
+    "electron": "^1.8.1",
+    "electron-rebuild": "^1.6.0"
   },
   "dependencies": {
     "monaco-editor": "^0.10.1",
+    "serialport": "^6.0.4",
     "xterm": "^2.9.2"
   }
 }
