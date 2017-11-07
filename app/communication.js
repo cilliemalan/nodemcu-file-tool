@@ -9,7 +9,8 @@
     const port_selector = el("port_selector");
     const reloadports_button = el("reloadports_button");
     const connect_button = el("connect_button");
-    const test_button = el("test_button");
+    const list_button = el("list_button");
+    const write_button = el("write_button");
 
     let port;
     let cmd_history = "";
@@ -231,7 +232,7 @@
     }
 
     async function command(cmd) {
-        invisible = true;
+        //invisible = true;
 
         try {
             cmd_history = "";
@@ -255,5 +256,37 @@
             invisible = false;
         }
     }
+
+    async function listfiles() {
+        let result = await command('do _l = file.list(); for k,v in pairs(_l) do print(k) end end');
+    }
+
+    async function writefile(name, contents) {
+        const cmdstr = `do
+            fd = file.open("${name}", "w")
+            if fd then
+${contents.split(/\r?\n/).map(line => `fd:writeline([==[${line}]==])`).join("\n")}
+                fd:flush()
+                fd:close()
+            else
+                print('write-error');
+            end
+        end`;
+
+        const result = await command(cmdstr);
+
+        if (/write-error/.test(result)) {
+            error("could not write file");
+        }
+    }
+
+    list_button.addEventListener("click", async () => {
+        const files = await listfiles();
+        console.log(files);
+    });
+
+    write_button.addEventListener("click", async () => {
+        await writefile("test.lua", editor.getValue());
+    });
 
 })(terminal);
