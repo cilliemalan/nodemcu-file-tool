@@ -94,6 +94,8 @@
         if (!port_to_connect_to) {
             error("Please select a port");
         } else {
+            connect_button.disabled = true;
+            disconnect_button.disabled = true;
             await disconnect();
 
             port = new SerialPort(port_to_connect_to, {
@@ -110,6 +112,8 @@
             port.on('close', e => {
                 port = null;
                 log('disconnected');
+                connect_button.disabled = false;
+                disconnect_button.disabled = true;
             });
 
             port.on('data', d => {
@@ -118,6 +122,9 @@
 
             await openAsync();
 
+            
+            connect_button.disabled = true;
+            disconnect_button.disabled = false;
             log('connected');
         }
 
