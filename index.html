@@ -6,17 +6,20 @@
   <title>NodeMCU Tool</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="./node_modules/xterm/dist/xterm.css" />
+
+  <script src="./node_modules/xterm/dist/xterm.js"></script>
+  <script src="./node_modules/xterm/dist/addons/fit/fit.js"></script>
 </head>
 
 <body>
   <div id="container">
     <div id="sidebar">
       <div class="port-selector">
-        <label>Connect to device (
-          <a href="javascript:void(0)" id="reloadports_button">reload</a>)</label>
+        <label>Connect to device (<a href="javascript:void(0)" id="reloadports_button">reload</a>)
+        </label>
         <select id="port_selector"></select>
         <button id="connect_button">Connect</button>
-        <button id="disconnect_button">Disconnect</button>
+        <button id="disconnect_button" disabled>Disconnect</button>
       </div>
     </div>
     <div id="editor"></div>
@@ -61,7 +64,8 @@
         '    print("Hello world!")',
         'end'
       ].join('\n'),
-      language: 'lua'
+      language: 'lua',
+      theme: "vs-dark",
     });
 
     window.addEventListener('resize', () => {
@@ -71,10 +75,10 @@
   });
 </script>
 
-<script src="./node_modules/xterm/dist/xterm.js"></script>
-<script src="./node_modules/xterm/dist/addons/fit/fit.js"></script>
 <script>
-  const terminal = new Terminal();
+  const terminal = new Terminal({
+    
+  });
   terminal.open(document.getElementById('terminal'));
   terminal.fit();
   window.addEventListener('resize', () => terminal.fit());
