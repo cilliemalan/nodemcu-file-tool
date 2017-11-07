@@ -11,7 +11,13 @@
 <body>
   <div id="container">
     <div id="sidebar">
-      sidebar
+      <div class="port-selector">
+        <label>Connect to device (
+          <a href="javascript:void(0)" id="reloadports_button">reload</a>)</label>
+        <select id="port_selector"></select>
+        <button id="connect_button">Connect</button>
+        <button id="disconnect_button">Disconnect</button>
+      </div>
     </div>
     <div id="editor"></div>
     <div id="terminal"></div>
