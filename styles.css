@@ -40,23 +40,23 @@ body {
 
 
 
-#sidebar .port-selector {
+#sidebar .grouping {
     padding: 5px;
     border: 1px solid #ccc;
     margin: 5px;
 }
 
-#sidebar .port-selector label {
+#sidebar .grouping label {
     margin-bottom: 5px;
     display: block;
 }
 
-#sidebar .port-selector select {
+#sidebar .grouping select {
     width: 100%;
     margin-bottom: 5px;
 }
 
-#sidebar .port-selector button {
+#sidebar .grouping button {
     width: calc(50% - 6px);
     margin: 0 2px 5px 2px;
     padding: 0;

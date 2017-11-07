@@ -14,12 +14,15 @@
 <body>
   <div id="container">
     <div id="sidebar">
-      <div class="port-selector">
+      <div class="grouping">
         <label>Connect to device (<a href="javascript:void(0)" id="reloadports_button">reload</a>)
         </label>
         <select id="port_selector"></select>
         <button id="connect_button">Connect</button>
         <button id="disconnect_button" disabled>Disconnect</button>
+      </div>
+      <div class="grouping">
+        <button id="test_button">test</button>
       </div>
     </div>
     <div id="editor"></div>
@@ -72,6 +75,8 @@
       console.log('resize');
       editor.layout()
     });
+
+    window.editor = editor;
   });
 </script>
 
