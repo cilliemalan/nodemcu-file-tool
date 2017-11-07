@@ -72,10 +72,13 @@
 </script>
 
 <script src="./node_modules/xterm/dist/xterm.js"></script>
+<script src="./node_modules/xterm/dist/addons/fit/fit.js"></script>
 <script>
-    const terminal = new Terminal();
-    terminal.open(document.getElementById('terminal'));
-    terminal.write('Not connected');
+  const terminal = new Terminal();
+  terminal.open(document.getElementById('terminal'));
+  terminal.fit();
+  window.addEventListener('resize', () => terminal.fit());
+  terminal.write('Not connected \r\n');
 </script>
 
 </html>
