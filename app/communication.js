@@ -4,11 +4,16 @@
 
     const SerialPort = require('serialport');
 
-    const port_selector = document.getElementById("port_selector");
-    const reloadports_button = document.getElementById("reloadports_button");
-    const connect_button = document.getElementById("connect_button");
+    const el = document.getElementById.bind(document);
+
+    const port_selector = el("port_selector");
+    const reloadports_button = el("reloadports_button");
+    const connect_button = el("connect_button");
+    const test_button = el("test_button");
 
     let port;
+    let cmd_history = "";
+    let invisible = false;
 
     function drainAsync() {
         return new Promise((resolve, reject) => {
@@ -117,12 +122,17 @@
             });
 
             port.on('data', d => {
-                term.write(d.toString());
+                const str = d.toString();
+                cmd_history += str;
+
+                if (!invisible) {
+                    term.write(str);
+                }
             });
 
             await openAsync();
 
-            
+
             connect_button.disabled = true;
             disconnect_button.disabled = false;
             log('connected');
@@ -211,6 +221,39 @@
 
     function warn(wut) {
         term.write(`\u001b[33m${wut.toString()}\u001b[39m\r\n`);
+    }
+
+    // files
+    function delay(howlong) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => { resolve(); }, howlong);
+        });
+    }
+
+    async function command(cmd) {
+        invisible = true;
+
+        try {
+            cmd_history = "";
+            const mgc = 100000000 + parseInt(Math.random() * 1000000000);
+            const rxresult = new RegExp(`>>>${mgc}([\\S\\s]*)<<<${mgc}`);
+            await writeAsync(`\n\nuart.echo(0)\n\n=">>>${mgc}"\n${cmd}\n="<<<${mgc}"\n\nuart.echo(1)\n`);
+
+            let match;
+            for (let i = 0; i < 10; i++) {
+                match = cmd_history.match(rxresult);
+                if (match) break;
+                await delay(300);
+            }
+
+            if (!match) {
+                error("command failed");
+            } else {
+                return match[1].trim();
+            }
+        } finally {
+            invisible = false;
+        }
     }
 
 })(terminal);
