@@ -302,6 +302,26 @@ ${contents.split(/\r?\n/).map(line => `fd:writeline([==[${line}]==])`).join("\n"
         });
     }
 
+    const savefile = async (defaultname) => {
+
+        const data = editor.getValue();
+
+        if (!data) {
+            alert('nothing to save');
+        } else {
+            const fn = await prompt({ title: 'Save File', label: 'Filename:', value: defaultname });
+
+            if (fn) {
+                try {
+                    await writefile(fn, data);
+                    await reloadfiles();
+                } catch (e) {
+                    error(e);
+                }
+            }
+        }
+    }
+
     const file_li = (name) => {
         const li = document.createElement('li');
         const span = document.createElement('span');
@@ -328,21 +348,6 @@ ${contents.split(/\r?\n/).map(line => `fd:writeline([==[${line}]==])`).join("\n"
     });
 
     save_current_button.addEventListener('click', () => {
-        const data = editor.getValue();
-
-        if (!data) {
-            alert('nothing to save');
-        } else {
-            prompt({ title: 'Save File', label: 'Filename:' })
-                .then(async fn => {
-                    if (fn) {
-                        try {
-                            await writefile(fn, data);
-                        } catch (e) {
-                            error(e);
-                        }
-                    }
-                });
-        }
+        savefile().catch(error);
     });
 })(terminal);
