@@ -34,7 +34,7 @@
         });
     }
 
-    function writeAsync(data, encoding) {
+    function writeInternalAsync(data, encoding) {
         return new Promise((resolve, reject) => {
             if (!port) {
                 reject('port closed');
@@ -53,6 +53,20 @@
                 }
             }
         });
+    }
+
+    async function writeAsync(data, encoding) {
+        let chunk = data;
+        while(chunk.length > 0) {
+            if(chunk.length > 100) {
+                await writeInternalAsync(chunk.substring(0, 100));
+                await delay(50);
+                chunk = chunk.substring(100);
+            } else {
+                await writeInternalAsync(chunk);
+                chunk = '';
+            }
+        }
     }
 
     function listAsync() {
@@ -245,6 +259,7 @@
             cmd_history = "";
             const mgc = 100000000 + parseInt(Math.random() * 1000000000);
             const rxresult = new RegExp(`>>>${mgc}([\\S\\s]*)<<<${mgc}`);
+            console.log(cmd);
             await writeAsync(`\n\nuart.echo(0)\n\n=">>>${mgc}"\n${cmd}\n="<<<${mgc}"\n\nuart.echo(1)\n`);
 
             let match;
@@ -266,25 +281,49 @@
 
     async function listfiles() {
         let result = await command('do _l = file.list(); for k,v in pairs(_l) do print(k) end end');
-        return result.split('\n')
+        return result.split(/\r?\n/).map(f => f.trim());
     }
 
     async function writefile(name, contents) {
-        const cmdstr = `do
-            fd = file.open("${name}", "w")
-            if fd then
+        const cmdstr = `
+fd = file.open("${name}", "w")
 ${contents.split(/\r?\n/).map(line => `fd:writeline([==[${line}]==])`).join("\n")}
-                fd:flush()
-                fd:close()
-            else
-                print('write-error');
-            end
-        end`;
+fd:flush()
+fd:close()`;
 
         const result = await command(cmdstr);
 
         if (/write-error/.test(result)) {
             error("could not write file");
+        }
+    }
+
+    async function readfile(name) {
+        const mgc = 100000000 + parseInt(Math.random() * 1000000000);
+        const cmdstr = `do
+            fd = file.open("${name}", "r")
+            if fd then
+                eof = false;
+                while not eof do
+                    contents = fd:readline();
+                    if contents == nil then
+                        eof = true;
+                    else
+                        uart.write(0, contents);
+                    end
+                end
+                fd:close();
+            else
+                print('${mgc}-error');
+            end
+        end`;
+
+        const result = await command(cmdstr);
+
+        if (new RegExp(`${mgc}-error`).test(result)) {
+            error("could not read file");
+        } else {
+            return result;
         }
     }
 
@@ -332,9 +371,11 @@ ${contents.split(/\r?\n/).map(line => `fd:writeline([==[${line}]==])`).join("\n"
 
         b1.className = 'delete';
         b1.href = 'javascript:void(0)';
+        b1.addEventListener('click', () => confirm("are you sure?") ? concole.log("TODO") : null);
 
         b2.className = 'load';
         b2.href = 'javascript:void(0)';
+        b2.addEventListener('click', () => confirm("load the file?") ? readfile(name).catch(error).then(contents => contents ? editor.setValue(contents) : null) : null);
 
         li.appendChild(span);
         li.appendChild(b1);
