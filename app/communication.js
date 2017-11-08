@@ -2,6 +2,7 @@
 
 (function (term) {
 
+    const prompt = require('electron-prompt');
     const SerialPort = require('serialport');
 
     const el = document.getElementById.bind(document);
@@ -9,8 +10,12 @@
     const port_selector = el("port_selector");
     const reloadports_button = el("reloadports_button");
     const connect_button = el("connect_button");
-    const list_button = el("list_button");
-    const write_button = el("write_button");
+    const file_list = el("file_list");
+    const reloadfiles_button = el("reloadfiles_button");
+    const save_current_button = el("save_current_button");
+    const exec_current_button = el("exec_current_button");
+    const exec_selection_button = el("exec_selection_button");
+
 
     let port;
     let cmd_history = "";
@@ -137,6 +142,8 @@
             connect_button.disabled = true;
             disconnect_button.disabled = false;
             log('connected');
+
+            await reloadfiles();
         }
 
     }
@@ -259,6 +266,7 @@
 
     async function listfiles() {
         let result = await command('do _l = file.list(); for k,v in pairs(_l) do print(k) end end');
+        return result.split('\n')
     }
 
     async function writefile(name, contents) {
@@ -280,13 +288,61 @@ ${contents.split(/\r?\n/).map(line => `fd:writeline([==[${line}]==])`).join("\n"
         }
     }
 
-    list_button.addEventListener("click", async () => {
-        const files = await listfiles();
-        console.log(files);
+
+
+    // file list ui
+    const reloadfiles = async () => {
+        const files = await listfiles()
+        while (file_list.lastChild) {
+            file_list.removeChild(file_list.lastChild);
+        }
+
+        files.forEach(file => {
+            file_list.appendChild(file_li(file));
+        });
+    }
+
+    const file_li = (name) => {
+        const li = document.createElement('li');
+        const span = document.createElement('span');
+        const b1 = document.createElement('a');
+        const b2 = document.createElement('a');
+
+        span.textContent = name;
+
+        b1.className = 'delete';
+        b1.href = 'javascript:void(0)';
+
+        b2.className = 'load';
+        b2.href = 'javascript:void(0)';
+
+        li.appendChild(span);
+        li.appendChild(b1);
+        li.appendChild(b2);
+
+        return li;
+    }
+
+    reloadfiles_button.addEventListener('click', () => {
+        reloadfiles().catch(error);
     });
 
-    write_button.addEventListener("click", async () => {
-        await writefile("test.lua", editor.getValue());
-    });
+    save_current_button.addEventListener('click', () => {
+        const data = editor.getValue();
 
+        if (!data) {
+            alert('nothing to save');
+        } else {
+            prompt({ title: 'Save File', label: 'Filename:' })
+                .then(async fn => {
+                    if (fn) {
+                        try {
+                            await writefile(fn, data);
+                        } catch (e) {
+                            error(e);
+                        }
+                    }
+                });
+        }
+    });
 })(terminal);
