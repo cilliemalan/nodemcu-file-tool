@@ -8,7 +8,7 @@ body {
 
 #container {
     display: grid;
-    grid-template-columns: 200px auto;
+    grid-template-columns: 300px auto;
     grid-template-rows: auto 207px;
     grid-template-areas:
         "sidebar editor"
@@ -85,6 +85,14 @@ body {
 
 #file_list > li {
     overflow: hidden;
+}
+
+#file_list > li > span {
+    display: block;
+    overflow: hidden;
+    float: left;
+    text-overflow: ellipsis;
+    width: calc(100% - 32px)
 }
 
 #file_list > li > a {
