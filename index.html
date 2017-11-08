@@ -22,8 +22,22 @@
         <button id="disconnect_button" disabled>Disconnect</button>
       </div>
       <div class="grouping">
-        <button id="list_button">List Files</button>
-        <button id="write_button">Write File</button>
+        Files: (<a href="javascript:void(0)" id="reloadports_button">refresh</a>)
+        <ul id="file_list">
+          <li>
+            <span>file1.lua</span>
+            <a href="javascript:void(0)" class="delete"></a>
+            <a href="javascript:void(0)" class="load"></a>
+          </li>
+          <li>
+            <span>file1.lua</span>
+            <a href="javascript:void(0)" class="delete"></a>
+            <a href="javascript:void(0)" class="load"></a>
+          </li>
+        </ul>
+        <button class="full" id="save_current_button">save current file</button>
+        <button class="full" id="exec_current_button">exec current file</button>
+        <button class="full" id="exec_selection_button">exec selection</button>
       </div>
     </div>
     <div id="editor"></div>
@@ -83,7 +97,7 @@
 
 <script>
   const terminal = new Terminal({
-    
+
   });
   terminal.open(document.getElementById('terminal'));
   terminal.fit();
