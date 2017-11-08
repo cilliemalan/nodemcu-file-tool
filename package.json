@@ -18,6 +18,7 @@
     "electron-rebuild": "^1.6.0"
   },
   "dependencies": {
+    "electron-prompt": "^0.4.0",
     "monaco-editor": "^0.10.1",
     "serialport": "^6.0.4",
     "xterm": "^2.9.2"
