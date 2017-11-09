@@ -288,7 +288,11 @@
 
     async function listfiles() {
         let result = await command('do _l = file.list(); for k,v in pairs(_l) do print(k) end end');
-        return result.split(/\r?\n/).map(f => f.trim());
+        if (result === undefined) {
+            return [];
+        } else {
+            return result.split(/\r?\n/).map(f => f.trim());
+        }
     }
 
     async function writefile(name, contents) {
