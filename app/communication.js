@@ -338,6 +338,10 @@ fd:close()`;
         }
     }
 
+    async function deletefile(name) {
+        await command(`file.remove("${name}")`);
+    }
+
 
 
     // file list ui
@@ -372,6 +376,16 @@ fd:close()`;
         }
     }
 
+    async function delete_and_refresh(name) {
+
+        try {
+            await deletefile(name);
+            await reloadfiles();
+        } catch (e) {
+            error(e);
+        }
+    }
+
     const file_li = (name) => {
         const li = document.createElement('li');
         const span = document.createElement('span');
@@ -382,11 +396,11 @@ fd:close()`;
 
         b1.className = 'delete';
         b1.href = 'javascript:void(0)';
-        b1.addEventListener('click', () => confirm("are you sure?") ? concole.log("TODO") : null);
+        b1.addEventListener('click', () => confirm(`are you sure you want to delete ${name}?`) ? delete_and_refresh(name).catch(error) : null);
 
         b2.className = 'load';
         b2.href = 'javascript:void(0)';
-        b2.addEventListener('click', () => confirm("load the file?") ? readfile(name).catch(error).then(contents => contents ? editor.setValue(contents) : null) : null);
+        b2.addEventListener('click', () => confirm(`are you sure you want to load ${name}?`) ? readfile(name).catch(error).then(contents => contents ? editor.setValue(contents) : null) : null);
 
         li.appendChild(span);
         li.appendChild(b1);
