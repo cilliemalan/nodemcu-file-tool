@@ -260,7 +260,7 @@
     }
 
     async function command(cmd) {
-        //invisible = true;
+        invisible = true;
 
         try {
             cmd_history = "";
