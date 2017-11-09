@@ -57,8 +57,8 @@
 
     async function writeAsync(data, encoding) {
         let chunk = data;
-        while(chunk.length > 0) {
-            if(chunk.length > 100) {
+        while (chunk.length > 0) {
+            if (chunk.length > 100) {
                 await writeInternalAsync(chunk.substring(0, 100));
                 await delay(50);
                 chunk = chunk.substring(100);
@@ -112,6 +112,15 @@
         return portsmap;
     }
 
+    function enable_controls_based_on_connected(connected) {
+        connect_button.disabled = connected;
+        disconnect_button.disabled = !connected;
+        reloadfiles_button.disabled = !connected;
+        save_current_button.disabled = !connected;
+        exec_current_button.disabled = !connected;
+        exec_selection_button.disabled = !connected;
+    }
+
     async function connect() {
         const port_to_connect_to = port_selector.value;
         log(`connecting to ${port_to_connect_to}`);
@@ -119,8 +128,7 @@
         if (!port_to_connect_to) {
             error("Please select a port");
         } else {
-            connect_button.disabled = true;
-            disconnect_button.disabled = true;
+            enable_controls_based_on_connected(false);
             await disconnect();
 
             port = new SerialPort(port_to_connect_to, {
@@ -132,13 +140,13 @@
                 error(e);
                 disconnect().catch(() => { });
                 port = null;
+                enable_controls_based_on_connected(false);
             });
 
             port.on('close', e => {
                 port = null;
                 log('disconnected');
-                connect_button.disabled = false;
-                disconnect_button.disabled = true;
+                enable_controls_based_on_connected(false);
             });
 
             port.on('data', d => {
@@ -153,8 +161,7 @@
             await openAsync();
 
 
-            connect_button.disabled = true;
-            disconnect_button.disabled = false;
+            enable_controls_based_on_connected(true);
             log('connected');
 
             await reloadfiles();
