@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "postinstall": "electron-rebuild"
+    "postinstall": "electron-rebuild",
+    "package": "electron-packager . nodemcu-tool --overwrite --package-manager yarn"
   },
   "repository": "https://github.com/cilliemalan/nodemcu-file-tool.git",
   "keywords": [
