@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "postinstall": "electron-rebuild",
-    "package": "electron-packager . nodemcu-tool --overwrite --package-manager yarn"
+    "package": "electron-packager . nodemcu-tool --overwrite --package-manager yarn && cp -rf ./node_modules/serialport ./nodemcu-tool-win32-x64/resources/app/node_modules/"
   },
   "repository": "https://github.com/cilliemalan/nodemcu-file-tool.git",
   "keywords": [
