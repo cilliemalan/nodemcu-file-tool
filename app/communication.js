@@ -416,4 +416,19 @@ fd:close()`;
     save_current_button.addEventListener('click', () => {
         savefile().catch(error);
     });
+
+    exec_current_button.addEventListener('click', () => {
+        const data = editor.getValue();
+        writeAsync(data + "\n").catch(error);
+    });
+
+    exec_selection_button.addEventListener('click', () => {
+        const selection = editor.getSelection();
+        if (!selection.isEmpty()) {
+            const data = editor.model.getValueInRange(selection);
+            if (data) {
+                writeAsync(data).catch(error);
+            }
+        }
+    });
 })(terminal);
