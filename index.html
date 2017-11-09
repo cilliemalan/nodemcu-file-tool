@@ -68,9 +68,10 @@
   amdRequire(['vs/editor/editor.main'], function () {
     var editor = monaco.editor.create(document.getElementById('editor'), {
       value: [
-        'function x()',
-        '    print("Hello world!")',
-        'end'
+        '',
+        '-- print something',
+        'print("welcome to nodemcu")',
+        ''
       ].join('\n'),
       language: 'lua',
       theme: "vs-dark",
